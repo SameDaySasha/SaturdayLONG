@@ -58,5 +58,15 @@ const createFood = (req, res) => {
 };
 
 // ------------------------------  ROUTER ------------------------------  
+const express = require('express');
+const router = express.Router({ mergeParams: true });
 
-// Your code here
+const { validateFoodInfo, getFoodsByDogId, createFood } = require('/dog-foods.js');
+
+// GET /dogs/:dogId/foods
+router.get('/', getFoodsByDogId);
+
+// POST /dogs/:dogId/foods
+router.post('/', validateFoodInfo, createFood);
+
+module.exports = router;

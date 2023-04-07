@@ -51,7 +51,11 @@ const getAllDogs = (req, res) => {
 const getDogById = (req, res) => {
   const { dogId } = req.params;
   const dog = dogs.find(dog => dog.dogId == dogId);
-  res.json(dog);
+  if(dog){
+    res.json(dog);
+  }else {let error = new Error
+  next(error)}
+  
 }
 
 // POST /dogs
@@ -84,4 +88,15 @@ const deleteDog = (req, res) => {
 
 // ------------------------------  ROUTER ------------------------------  
 
-// Your code here
+
+const express = require('express');
+const router = express.Router();
+router.use(express.json())
+
+
+router.get('/', getAllDogs)  
+router.get('/:dogId', getDogById)
+router.post('/', createDog)
+router.put('/:dogId', updateDog)
+router.delete('/:dogId', deleteDog)
+module.exports = router;

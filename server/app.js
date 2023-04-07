@@ -1,12 +1,15 @@
 const express = require('express');
 const app = express();
+const dogs = require('./routes/dogs.js')
+require('dotenv').config()
 app.use(express.static('assets'))
 app.use(express.json())
+app.use('/dogs', dogs)
 
 
+console.log(process.env.NODE_ENV)
 
-
-const loggerMiddleWare = (req, res, next, ) => {
+const loggerMiddleWare = (req, res, next,) => {
     console.log(`
     METHOD: ${req.method} 
     URL: ${req.url}`)
@@ -33,13 +36,14 @@ app.post('/test-json', (req, res, next) => {
 });
 
 app.use((req, res, next)=>{
- 
   next(new Error(`"The requested resource couldn't be found"`)) 
 }) 
 
 const errorHandlingMiddleWare = (err, req, res, next) => {
+ if(process.env.NODE_ENV==='development'){
   console.log(err)
-  res.status(404).send("The requested resource couldn't be found.")
+  res.status(res.statusCode||500).send("Something went wrong")}
+ 
 }
 app.use(errorHandlingMiddleWare)
 // For testing express-async-errors
@@ -47,5 +51,5 @@ app.get('/test-error', async (req, res) => {
   throw new Error("Hello World!")
 });
 
-const port = 5001;
-app.listen(port, () => console.log('Server is listening on port', port));
+const port = process.env.PORT || 8001;
+app.listen(port, () => console.log(`Server is listening on port: ${port}`));
